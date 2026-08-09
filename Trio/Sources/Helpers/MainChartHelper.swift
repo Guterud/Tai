@@ -48,14 +48,14 @@ enum MainChartHelper {
         /// Backfill triggers when the visible leading edge gets this close
         /// to the domain start.
         static let historyBackfillLeadSeconds: TimeInterval = 2 * 3600
-        /// Visible x-axis window seeded on first launch of the chart (matches the old 6 h default).
-        static let defaultVisibleSeconds: TimeInterval = 6 * 3600
+        /// Visible x-axis window seeded on first launch of the chart (chanched the old 6 h default to 3 h).
+        static let defaultVisibleSeconds: TimeInterval = 3 * 3600
         /// Tightest pinch-in zoom.
         static let minVisibleSeconds: TimeInterval = 1 * 3600
         /// Widest pinch-out zoom.
         static let maxVisibleSeconds: TimeInterval = 24 * 3600
         /// Double-tap cycles the visible window through these presets.
-        static let zoomPresets: [TimeInterval] = [6 * 3600, 12 * 3600, 24 * 3600]
+        static let zoomPresets: [TimeInterval] = [3 * 3600, 6 * 3600, 12 * 3600]
         /// How long (s) a finished tap waits for the next one before the chart acts on the
         /// count — double-tap zoom vs. triple-tap recenter.
         static let multiTapWindow: TimeInterval = 0.3
