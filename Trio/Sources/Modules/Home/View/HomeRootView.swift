@@ -612,7 +612,7 @@ extension Home {
                         " " + dateFormatter.string(from: determination?.deliverAt ?? Date())
 
                     // Add warning if the loop is not closed or if it's a manual temp basal
-                    if state.manualTempBasal || !state.closedLoop {
+                    if state.manualTempBasal || state.dosingMode.automation == .off {
                         title += String(
                             localized: " - not enacted!",
                             comment: "Suffix appended to Home status popup title when the suggestion was not enacted"
@@ -674,6 +674,18 @@ extension Home {
                     Text("No Algorithm result").font(.body).foregroundColor(.primary)
                 }
 
+                if state.dosingMode.automation == .off {
+                    Button {
+                        state.isStatusPopupPresented = false
+                        state.showModal(for: .manualTempBasal)
+                    } label: {
+                        Text("Manual Temp Basal")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(.bordered)
+                    .padding(.top)
+                }
+
                 Button {
                     state.isStatusPopupPresented = false
                 } label: {
@@ -707,7 +719,7 @@ extension Home {
                     " " + dateFormatter.string(from: determination?.deliverAt ?? Date())
 
                 // Add warning if the loop is not closed or if it's a manual temp basal
-                if state.manualTempBasal || !state.closedLoop {
+                if state.manualTempBasal || state.dosingMode.automation == .off {
                     statusTitlePopup += String(
                         localized: " - not enacted!",
                         comment: "Suffix appended to Home status popup title when the suggestion was not enacted"
