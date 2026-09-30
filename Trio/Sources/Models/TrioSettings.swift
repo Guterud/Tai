@@ -112,6 +112,12 @@ struct TrioSettings: JSON, Equatable, Encodable {
     /// Controls whether watchface data transmission is enabled
     var isWatchfaceDataEnabled: Bool = false
 
+    /// Master switch for Garmin watch commands, off until the user opts in
+    var isGarminCommandControlEnabled: Bool = false
+
+    /// Allows Garmin bolus commands; only effective while `isGarminCommandControlEnabled` is on
+    var isGarminBolusCommandEnabled: Bool = false
+
     /// Computed property that groups all Garmin settings into a single struct
     var garminSettings: GarminWatchSettings {
         get {
@@ -120,7 +126,9 @@ struct TrioSettings: JSON, Equatable, Encodable {
                 datafields: garminDatafields,
                 primaryAttributeChoice: primaryAttributeChoice,
                 secondaryAttributeChoice: secondaryAttributeChoice,
-                isWatchfaceDataEnabled: isWatchfaceDataEnabled
+                isWatchfaceDataEnabled: isWatchfaceDataEnabled,
+                isCommandControlEnabled: isGarminCommandControlEnabled,
+                isBolusCommandEnabled: isGarminBolusCommandEnabled
             )
         }
         set {
@@ -129,6 +137,8 @@ struct TrioSettings: JSON, Equatable, Encodable {
             primaryAttributeChoice = newValue.primaryAttributeChoice
             secondaryAttributeChoice = newValue.secondaryAttributeChoice
             isWatchfaceDataEnabled = newValue.isWatchfaceDataEnabled
+            isGarminCommandControlEnabled = newValue.isCommandControlEnabled
+            isGarminBolusCommandEnabled = newValue.isBolusCommandEnabled
         }
     }
 }
@@ -441,6 +451,14 @@ extension TrioSettings: Decodable {
 
         if let isWatchfaceDataEnabled = try? container.decode(Bool.self, forKey: .isWatchfaceDataEnabled) {
             settings.isWatchfaceDataEnabled = isWatchfaceDataEnabled
+        }
+
+        if let isGarminCommandControlEnabled = try? container.decode(Bool.self, forKey: .isGarminCommandControlEnabled) {
+            settings.isGarminCommandControlEnabled = isGarminCommandControlEnabled
+        }
+
+        if let isGarminBolusCommandEnabled = try? container.decode(Bool.self, forKey: .isGarminBolusCommandEnabled) {
+            settings.isGarminBolusCommandEnabled = isGarminBolusCommandEnabled
         }
 
         self = settings
