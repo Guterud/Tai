@@ -76,7 +76,16 @@ import Testing
     @Test("Delete removes the root and its carb equivalents") func testDeleteMealRemovesFamily() async throws {
         let meal = makeMeal(carbs: 30, fat: 50, protein: 100)
         try await storage.storeCarbs([meal], areFetchedFromRemote: false)
-        #expect(try await allRows().count == 3)
+        // Tai keeps its duration-based FPU split and excludes upstream's capped 3-entry split (PRs #951/#1019/#1022,
+        // see UPSTREAM_SYNC_BASELINE.md), so the family size is asserted by provenance, not by a fixed count.
+        let stored = try await allRows()
+        let roots = stored.filter { !$0.isFPU }
+        let children = stored.filter(\.isFPU)
+        #expect(roots.count == 1)
+        #expect(roots.first?.id?.uuidString == meal.id)
+        #expect(!children.isEmpty)
+        #expect(children.allSatisfy { $0.fpuID?.uuidString == meal.fpuID })
+        #expect(children.allSatisfy { $0.carbs > 0 })
 
         let failures = try await service.deleteMeal(rootObjectID: try await rootObjectID(id: meal.id!))
 
@@ -144,11 +153,15 @@ import Testing
         let meal = makeMeal(carbs: 30, fat: 50, protein: 100)
         try await storage.storeCarbs([meal], areFetchedFromRemote: false)
         guard let child = try await allRows().first(where: { $0.isFPU }) else { throw TestError("No child") }
+        let before = try await allRows()
 
         await #expect(throws: CarbEntryMutationError.notARoot) {
             _ = try await service.deleteMeal(rootObjectID: child.objectID)
         }
-        #expect(try await allRows().count == 3)
+        // Tai keeps its duration-based FPU split and excludes upstream's capped 3-entry split (PRs #951/#1019/#1022,
+        // see UPSTREAM_SYNC_BASELINE.md), so the family size is asserted by provenance, not by a fixed count.
+        #expect(before.count > 1)
+        #expect(Set(try await allRows().map(\.objectID)) == Set(before.map(\.objectID)))
     }
 
     @Test("Replace stores the new meal under the replacement id") func testReplaceMeal() async throws {
