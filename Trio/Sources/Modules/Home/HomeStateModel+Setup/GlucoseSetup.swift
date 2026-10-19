@@ -129,6 +129,13 @@ extension Home.StateModel {
     }
 }
 
+extension Home.StateModel {
+    func addManualGlucose(_ amount: Decimal) {
+        let glucose = units == .mmolL ? amount.asMgdL : amount
+        glucoseStorage.addManualGlucose(glucose: Int(glucose))
+    }
+}
+
 /// What the home stats panel shows for its range.
 struct HomeStatsPanelStats: Sendable {
     var veryLowPct: Double = 0
@@ -160,10 +167,5 @@ struct HomeStatsPanelStats: Sendable {
         highPct = distribution.highPct
         veryHighPct = distribution.veryHighPct
         meanGlucose = Double(readings.reduce(0) { $0 + $1.value }) / Double(readings.count)
-    }
-
-    func addManualGlucose(_ amount: Decimal) {
-        let glucose = units == .mmolL ? amount.asMgdL : amount
-        glucoseStorage.addManualGlucose(glucose: Int(glucose))
     }
 }
