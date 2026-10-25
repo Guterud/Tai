@@ -373,9 +373,10 @@ import Testing
         #expect(roots.first?.protein == 100)
         #expect(roots.first?.fpuID?.uuidString == editedFpuID)
 
-        // fat=50g + protein=100g -> 850 kcal -> (850/10) * 0.5 = 42 equivalents -> two entries of 21g
+        // Tai keeps the time-cap spread: 850 kcal -> 42.5g over 8h at 30m steps -> 16 entries of 2.7g
         let carbEquivalents = rows.filter(\.isFPU)
-        #expect(carbEquivalents.map { Int($0.carbs) } == [21, 21])
+        #expect(carbEquivalents.count == 16)
+        #expect(carbEquivalents.allSatisfy { abs($0.carbs - 2.7) < 0.001 })
         #expect(carbEquivalents.allSatisfy { $0.fpuID?.uuidString == editedFpuID })
         #expect(carbEquivalents.allSatisfy { $0.isUploadedToNS == false })
     }
