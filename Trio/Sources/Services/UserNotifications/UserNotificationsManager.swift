@@ -288,13 +288,13 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
         action: ScheduleNotificationAction,
         notification: UNNotification
     ) {
-        let info = notification.request.content.userInfo
+        let userInfo = notification.request.content.userInfo
         guard
-            let scheduleRaw = info[ScheduleNotificationUserInfoKey.scheduleID] as? String,
+            let scheduleRaw = userInfo[ScheduleNotificationUserInfoKey.scheduleID] as? String,
             let scheduleID = UUID(uuidString: scheduleRaw),
-            let profileRaw = info[ScheduleNotificationUserInfoKey.profileID] as? String,
+            let profileRaw = userInfo[ScheduleNotificationUserInfoKey.profileID] as? String,
             let profileID = UUID(uuidString: profileRaw),
-            let occurrenceEpoch = info[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
+            let occurrenceEpoch = userInfo[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
         else {
             warning(.alerts, "Profile schedule notification payload is malformed, ignoring it")
             return
@@ -319,13 +319,13 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
     /// dialog. This is distinct from the explicit `.confirm` / `.skip` action buttons, which run
     /// directly without an in-app prompt.
     private func handleScheduleActivationDefaultTap(notification: UNNotification) {
-        let info = notification.request.content.userInfo
+        let userInfo = notification.request.content.userInfo
         guard
-            let scheduleRaw = info[ScheduleNotificationUserInfoKey.scheduleID] as? String,
+            let scheduleRaw = userInfo[ScheduleNotificationUserInfoKey.scheduleID] as? String,
             let scheduleID = UUID(uuidString: scheduleRaw),
-            let profileRaw = info[ScheduleNotificationUserInfoKey.profileID] as? String,
+            let profileRaw = userInfo[ScheduleNotificationUserInfoKey.profileID] as? String,
             let profileID = UUID(uuidString: profileRaw),
-            let occurrenceEpoch = info[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
+            let occurrenceEpoch = userInfo[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
         else {
             warning(.alerts, "Profile schedule notification payload is malformed, ignoring tap")
             return

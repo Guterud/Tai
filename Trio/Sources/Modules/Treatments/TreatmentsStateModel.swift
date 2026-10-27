@@ -977,7 +977,7 @@ extension Treatments.StateModel {
             // Update evBG and minPredBG from simulated determination
             if let simDetermination = simulated {
                 evBG = Decimal(simDetermination.eventualBG ?? 0)
-                minPredBG = simDetermination.minPredBGFromReason ?? 0
+                minPredBG = simDetermination.minPredBG ?? 0
                 debug(.bolus, "Forecast simulated, min predicted BG \(minPredBG) mg/dL")
             }
         }
