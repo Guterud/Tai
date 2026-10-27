@@ -53,7 +53,7 @@ extension Home.StateModel {
             try suggestedDeterminationController.performFetch()
             updateSuggestedDeterminationFromController()
         } catch {
-            debug(.default, "\(DebuggingIdentifiers.failed) Failed to perform suggested determination fetch: \(error)")
+            warning(.storage, "Fetching the suggested determination failed", error: error)
         }
     }
 

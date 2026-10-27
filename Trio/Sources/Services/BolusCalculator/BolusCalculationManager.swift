@@ -379,8 +379,8 @@ final class BaseBolusCalculationManager: BolusCalculationManager, Injectable {
     /// - Returns: CalculationResult with detailed breakdown of the calculation
     func calculateInsulin(input: CalculationInput) async -> CalculationResult {
         debug(
-            .service,
-            "Concentration U\(Int(truncating: NSDecimalNumber(decimal: insulinConcentration * 100))), Bolus increment: \(bolusIncrement)"
+            .bolus,
+            "Concentration U\(Int(truncating: NSDecimalNumber(decimal: insulinConcentration * 100))), bolus increment \(bolusIncrement) U"
         )
         // insulin needed for the current blood glucose
         let targetDifference = input.currentBG - input.target

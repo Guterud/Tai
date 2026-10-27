@@ -245,8 +245,8 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
         defer { completionHandler() }
 
         debug(
-            .service,
-            "NotificationResponse: actionIdentifier=\(response.actionIdentifier) category=\(response.notification.request.content.categoryIdentifier)"
+            .alerts,
+            "Notification response \(response.actionIdentifier) for category \(response.notification.request.content.categoryIdentifier)"
         )
 
         let userInfo = response.notification.request.content.userInfo
@@ -296,12 +296,12 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
             let profileID = UUID(uuidString: profileRaw),
             let occurrenceEpoch = info[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
         else {
-            debug(.service, "Schedule notification payload malformed; ignoring")
+            warning(.alerts, "Profile schedule notification payload is malformed, ignoring it")
             return
         }
         let occurrence = Date(timeIntervalSince1970: occurrenceEpoch)
 
-        debug(.service, "ScheduledActivation: response action=\(action.rawValue) schedule=\(scheduleID)")
+        info(.settings, "Profile schedule notification answered with \(action.rawValue)")
         switch action {
         case .confirm:
             runScheduledActivation(
@@ -327,11 +327,11 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
             let profileID = UUID(uuidString: profileRaw),
             let occurrenceEpoch = info[ScheduleNotificationUserInfoKey.occurrenceEpoch] as? Double
         else {
-            debug(.service, "ScheduledActivation default-tap: malformed payload")
+            warning(.alerts, "Profile schedule notification payload is malformed, ignoring tap")
             return
         }
         let occurrence = Date(timeIntervalSince1970: occurrenceEpoch)
-        debug(.service, "ScheduledActivation: default-tap routing to AdaptProfile for schedule=\(scheduleID)")
+        debug(.settings, "Profile schedule notification tapped, opening profiles")
         // Stash the request first so AdaptProfile.StateModel picks it up regardless of whether
         // it's already alive (Foundation notification path) or about to spin up (drain on
         // subscribe). Navigate afterwards so the new RootView sees the mailbox populated.
@@ -360,18 +360,17 @@ extension BaseUserNotificationsManager: UNUserNotificationCenterDelegate {
     /// in-app confirmation — tapping the action IS the confirmation. Clears the schedule's
     /// `pendingOccurrence` either way so the firer moves on.
     private func runScheduledActivation(scheduleID: UUID, profileID: UUID, occurrence: Date) {
-        debug(.service, "ScheduledActivation: confirm received for schedule=\(scheduleID) profile=\(profileID)")
+        info(.settings, "Scheduled profile activation confirmed")
         Task { @MainActor [weak self] in
             guard let self else { return }
             let provider = AdaptProfile.Provider(resolver: self.resolver)
             await provider.markScheduleActivated(scheduleID: scheduleID, occurrence: occurrence)
-            debug(.service, "ScheduledActivation: markScheduleActivated done")
             let outcome = await provider.activate(
                 id: profileID,
                 durationMinutes: nil,
                 confirmedPumpSync: true
             )
-            debug(.service, "ScheduledActivation: activate outcome=\(outcome)")
+            info(.settings, "Scheduled profile activation finished with \(String(describing: outcome))")
             Foundation.NotificationCenter.default.post(
                 name: .didUpdateProfileSchedules,
                 object: nil

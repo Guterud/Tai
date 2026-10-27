@@ -65,8 +65,8 @@ final class BasePumpHistoryStorage: PumpHistoryStorage, Injectable {
                 roundingMode: .plain
             )
         debug(
-            .apsManager,
-            "Concentration: Pumped bolus volume \(roundedVolume) at U\(Int(concentration * 100)), adjusted to U100 bolus: \(u100Volume) U"
+            .pump,
+            "Pumped U\(Int(concentration * 100)) bolus \(roundedVolume) U adjusted to U100 bolus \(u100Volume) U"
         )
         return u100Volume
     }
@@ -82,8 +82,8 @@ final class BasePumpHistoryStorage: PumpHistoryStorage, Injectable {
                 roundingMode: .plain
             )
         debug(
-            .apsManager,
-            "Concentration: Pumped rate volume \(pumpedRate.precisionRounded()) U\(Int(concentration * 100))/hr, adjusted to U100 rate: \(u100Rate) IU/hr."
+            .pump,
+            "Pumped U\(Int(concentration * 100)) rate \(pumpedRate.precisionRounded()) U/h adjusted to U100 rate \(u100Rate) U/h"
         )
         return u100Rate
     }

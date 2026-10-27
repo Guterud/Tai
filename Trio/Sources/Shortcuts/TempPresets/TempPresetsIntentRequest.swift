@@ -116,10 +116,7 @@ final class TempPresetsIntentRequest: BaseIntentsRequest {
     /// which is the same backend used by `CreateCustomTempTargetIntent`.
     @MainActor func schedulePresetTempTarget(_ preset: TempPreset, at fireAt: Date) async -> Bool {
         guard let details = await fetchPresetTempTargetDetails(preset) else {
-            debug(
-                .default,
-                "\(DebuggingIdentifiers.failed) Preset not found or incomplete for scheduling: \(preset.name)"
-            )
+            warning(.treatments, "Temp target preset not found or incomplete, not scheduled")
             return false
         }
         return await ScheduledTempTargetHelper.enact(

@@ -111,8 +111,8 @@ final class BaseDeviceDataManager: DeviceDataManager, Injectable {
                 storage.save(modifiedPreferences, as: OpenAPS.Settings.preferences)
                 settingsManager.preferences = modifiedPreferences
                 debug(
-                    .deviceManager,
-                    "Concentration U\(Int(truncating: NSDecimalNumber(decimal: concentration * 100))), Bolus increment set to: \(settingsManager.preferences.bolusIncrement), supported Pump Increments = \(pumpManager.supportedBolusVolumes.prefix(1))"
+                    .pump,
+                    "Concentration U\(Int(truncating: NSDecimalNumber(decimal: concentration * 100))), bolus increment set to \(settingsManager.preferences.bolusIncrement) U, smallest pump increment \(pumpManager.supportedBolusVolumes.prefix(1))"
                 )
 
                 // Ensure the pump manager's delivery limits always reflect the user's
@@ -186,8 +186,8 @@ final class BaseDeviceDataManager: DeviceDataManager, Injectable {
                     concentration: concentration
                 )
                 debug(
-                    .deviceManager,
-                    "Concentration U\(Int(truncating: NSDecimalNumber(decimal: settingsManager.settings.insulinConcentration * 100))), Bolus increment reset to: \(modifiedPreferences.bolusIncrement)"
+                    .pump,
+                    "Concentration U\(Int(truncating: NSDecimalNumber(decimal: settingsManager.settings.insulinConcentration * 100))), bolus increment reset to \(modifiedPreferences.bolusIncrement) U"
                 )
                 storage.save(modifiedPreferences, as: OpenAPS.Settings.preferences)
                 settingsManager.preferences = modifiedPreferences

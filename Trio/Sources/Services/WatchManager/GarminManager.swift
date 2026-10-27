@@ -1220,10 +1220,7 @@ extension BaseGarminManager: IQUIOverrideDelegate, IQDeviceEventDelegate, IQAppM
                     }
                 }
             } catch {
-                debug(
-                    .watchManager,
-                    "⌚️❌ Garmin: Loading presets for \(trigger) push failed (\(WatchCommandErrorCategory.name(for: error)))"
-                )
+                warning(.watch, "Garmin presets for \(trigger) push could not be loaded (\(WatchCommandErrorCategory.name(for: error)))")
             }
         }
     }
@@ -1232,7 +1229,7 @@ extension BaseGarminManager: IQUIOverrideDelegate, IQDeviceEventDelegate, IQAppM
     /// would otherwise suppress the next state update or leak command data to other apps.
     private func sendTargetedResponse(_ response: [String: Any], to app: IQApp, appName: String) {
         let kind = response[WatchMessageKeys.request] as? String ?? "response"
-        debug(.watchManager, "⌚️📤 Garmin: Sending \(kind) to \(appName)")
+        debugGarmin("Sending \(kind) to Garmin \(appName)")
         sendMessage(response, to: app, appName: appName)
     }
 }

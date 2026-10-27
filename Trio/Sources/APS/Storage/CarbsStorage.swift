@@ -249,7 +249,7 @@ final class BaseCarbsStorage: CarbsStorage, Injectable {
         do {
             try await insertCarbEntry(entry, areFetchedFromRemote: areFetchedFromRemote)
         } catch {
-            print(error.localizedDescription)
+            warning(.storage, "Storing carb entry failed", error: error)
         }
     }
 
