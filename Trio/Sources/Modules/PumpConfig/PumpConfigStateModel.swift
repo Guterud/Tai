@@ -23,6 +23,7 @@ extension PumpConfig {
         @Published var allowDilution: Bool = false
         @Published var hideInsulinBadge: Bool = false
         @Injected() var bluetoothManager: BluetoothStateManager!
+        @Injected() var logExport: LogExport!
 
         var pumpSettings: PumpSettings {
             provider.settings()
